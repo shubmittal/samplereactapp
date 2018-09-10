@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
+import Like from "./common/like"
 
 class Movies extends Component {
   state = {
@@ -10,6 +11,16 @@ class Movies extends Component {
     const movies = this.state.movies.filter(item => item._id !== id);
     this.setState({ movies });
   };
+
+  toggleLike = (movie) =>
+      {
+       
+        let movies = this.state.movies;
+       const index = this.state.movies.indexOf(movie);
+       movies[index].like = !(movies[index].like);
+       this.setState({movies});
+      }
+
   render() {
       const {length:nummovies} = this.state.movies;
 
@@ -25,6 +36,7 @@ class Movies extends Component {
               <th scope="col">Genre</th>
               <th scope="col">Stock</th>
               <th scope="col">Rate</th>
+              <th scope="col">Like</th>
               <th scope="col" />
             </tr>
           </thead>
@@ -36,6 +48,7 @@ class Movies extends Component {
                   <td>{item.genre.name}</td>
                   <td>{item.numberInStock}</td>
                   <td>{item.dailyRentalRate}</td>
+                  <td><Like like = {item.like} onToggle ={() => this.toggleLike(item)}></Like></td>
                   <td>
                     <button
                       id={item._id}
