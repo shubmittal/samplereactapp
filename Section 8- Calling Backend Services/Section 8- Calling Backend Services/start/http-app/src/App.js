@@ -44,7 +44,7 @@ class App extends Component {
     this.setState({posts})
     post.title = "nkckjkscsx"
     try{
-    await http.put(`${config.apiEndpoint}/${post.id}`, post);    
+    await http.put(`${config.apiEndpoint}/999`, post);    
     }
     catch(ex)
     {

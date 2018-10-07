@@ -1,13 +1,15 @@
 import React, { Component } from "react";
-import { getMovies } from "../services/fakeMovieService";
+import { getMovies, deleteMovie } from "../services/movieService";
 import Pagination from "../components/common/pagination";
 import MoviesTable from "../components/moviesTable";
 import { paginate } from "../utils/paginate";
-import { getGenres } from "../services/fakeGenreService";
+import { getGenres } from "../services/genreService";
 import ListGroup from "../components/common/listgroup";
 import _ from "lodash";
 import { Link } from "react-router-dom";
 import SearchBox from "./common/searchBox";
+import { toast } from 'react-toastify'
+
 
 class Movies extends Component {
   state = {
@@ -20,18 +22,33 @@ class Movies extends Component {
     sortColumn: { path: "title", order: "asc" }
   };
 
-  componentDidMount = () => {
-    const genres = [{ name: "All Genres", _id: -1 }, ...getGenres()];
+  componentDidMount = async () => {
+    let { data: allGenres } = await getGenres()
+    let { data: movies } = await getMovies()
+    const genres = [{ name: "All Genres", _id: -1 }, ...allGenres];
 
     this.setState({
-      movies: getMovies(),
-      genres
+      movies, genres
     });
   };
 
-  deleteMovie = id => {
+  deleteMovie = async id => {
+    const originalState = this.state.movies;
     const movies = this.state.movies.filter(item => item._id !== id);
     this.setState({ movies });
+    try {
+      await deleteMovie(id)
+
+    }
+    catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+
+        toast.error("An error occured")
+      }
+      this.setState({ movies: originalState })
+
+    }
+
   };
 
   toggleLike = movie => {
@@ -70,9 +87,9 @@ class Movies extends Component {
         ? allMovies.filter(m => m.genre._id === currentGenre._id)
         : searchString !== ""
           ? allMovies.filter(
-              m =>
-                m.title.toUpperCase().search(searchString.toUpperCase()) !== -1
-            )
+            m =>
+              m.title.toUpperCase().search(searchString.toUpperCase()) !== -1
+          )
           : allMovies;
 
     const sorted = _.orderBy(

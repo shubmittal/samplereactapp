@@ -6,6 +6,9 @@ import {BrowserRouter} from 'react-router-dom'
 import registerServiceWorker from './registerServiceWorker';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'font-awesome/css/font-awesome.css'
+import logService from "./services/logService"
+
+logService.init()
 
 
 ReactDOM.render(<BrowserRouter><App/></BrowserRouter>, document.getElementById('root'));

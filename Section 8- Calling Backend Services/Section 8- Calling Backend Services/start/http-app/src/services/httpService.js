@@ -1,10 +1,11 @@
 import axios from 'axios'
 import {toast} from 'react-toastify'
+import loginService from './logService'
 
 axios.interceptors.response.use(null, error => {
-    if (!(error.response && error.response.status > 400 &&  error.response.status < 500))
+    if (!(error.response && error.response.status >= 400 &&  error.response.status < 500))
     {
-      console.log("An unexpected error")
+      loginService.log(error)
       toast.error("Unexpected error")
     }
     return Promise.reject(error)
