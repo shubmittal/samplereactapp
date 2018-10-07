@@ -8,8 +8,7 @@ import ListGroup from "../components/common/listgroup";
 import _ from "lodash";
 import { Link } from "react-router-dom";
 import SearchBox from "./common/searchBox";
-import { toast } from 'react-toastify'
-
+import { toast } from "react-toastify";
 
 class Movies extends Component {
   state = {
@@ -23,12 +22,13 @@ class Movies extends Component {
   };
 
   componentDidMount = async () => {
-    let { data: allGenres } = await getGenres()
-    let { data: movies } = await getMovies()
+    let { data: allGenres } = await getGenres();
+    let { data: movies } = await getMovies();
     const genres = [{ name: "All Genres", _id: -1 }, ...allGenres];
 
     this.setState({
-      movies, genres
+      movies,
+      genres
     });
   };
 
@@ -37,18 +37,13 @@ class Movies extends Component {
     const movies = this.state.movies.filter(item => item._id !== id);
     this.setState({ movies });
     try {
-      await deleteMovie(id)
-
-    }
-    catch (ex) {
+      await deleteMovie(id);
+    } catch (ex) {
       if (ex.response && ex.response.status === 404) {
-
-        toast.error("An error occured")
+        toast.error("An error occured");
       }
-      this.setState({ movies: originalState })
-
+      this.setState({ movies: originalState });
     }
-
   };
 
   toggleLike = movie => {
@@ -87,9 +82,9 @@ class Movies extends Component {
         ? allMovies.filter(m => m.genre._id === currentGenre._id)
         : searchString !== ""
           ? allMovies.filter(
-            m =>
-              m.title.toUpperCase().search(searchString.toUpperCase()) !== -1
-          )
+              m =>
+                m.title.toUpperCase().search(searchString.toUpperCase()) !== -1
+            )
           : allMovies;
 
     const sorted = _.orderBy(
@@ -114,6 +109,7 @@ class Movies extends Component {
       sortColumn,
       searchString
     } = this.state;
+    const { user } = { ...this.props };
 
     const { filteredLength, data: movies } = this.getFilteredData();
 
@@ -131,12 +127,15 @@ class Movies extends Component {
           {nummovies > 0 && (
             <h1> Showing {filteredLength} movies from database</h1>
           )}
-          <Link
-            className="btn btn-primary m-2"
-            to={{ pathname: `/movies/new` }}
-          >
-            Add Movie
-          </Link>
+
+          {user && (
+            <Link
+              className="btn btn-primary m-2"
+              to={{ pathname: `/movies/new` }}
+            >
+              Add Movie
+            </Link>
+          )}
 
           <SearchBox onChange={this.handleSearch} value={searchString} />
 

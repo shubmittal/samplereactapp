@@ -5,9 +5,9 @@ import jwtDecode from 'jwt-decode'
 
 
 const loginApiEndpoint = `${config.apiEndpoint}/auth`;
-const tokenKey = config.tokeneKey;
+const tokenKey = config.tokenKey;
 
-
+httpService.setjwt(getjwt())
 
 export async function login(credentials)
 {
@@ -35,5 +35,10 @@ export function getCurrentUser()
   export function loginWithJWT (jwt)
   {
     localStorage.setItem(tokenKey,jwt)
+  }
+
+  export function getjwt()
+  {
+    return localStorage.getItem(tokenKey)
   }
   

@@ -4,6 +4,7 @@ import { getGenres } from "../services/genreService";
 import Form from "./common/form";
 import Joi from "joi";
 
+
 class MovieForm extends Form {
   state = {
     data: {
@@ -40,8 +41,16 @@ class MovieForm extends Form {
 
   async doSubmit() {
     const movie = this.state.data;
+    try{
     await saveMovie(movie);
     this.props.history.push("/movies");
+    }
+    catch(ex)
+    {
+      
+      this.props.history.push("/login")
+
+    }
   }
   async populateGenres()
   {

@@ -3,8 +3,10 @@ import Like from "../components/common/like";
 import propTypes from "prop-types";
 import Table from "./common/table";
 import { Link } from "react-router-dom";
+import {getCurrentUser} from '../services/loginService'
 
 class MoviesTable extends Component {
+
   columns = [
     {
       label: "Title",
@@ -25,7 +27,7 @@ class MoviesTable extends Component {
     {
       key: "delete",
       content: item => (
-        <button
+       <button
           id={item._id}
           className="btn btn-small btn-danger"
           onClick={() => this.props.onDelete(item._id)}
@@ -36,7 +38,16 @@ class MoviesTable extends Component {
     }
   ];
 
+  constructor() { 
+    super() 
+    let user = getCurrentUser();
+    if (user && user.isAdmin) return;
+    this.columns = this.columns.filter(item => item.key !== "delete")
+
+  }
+
   render() {
+    
     const { movies, sortColumn, onSort } = this.props;
     return (
       <Table
